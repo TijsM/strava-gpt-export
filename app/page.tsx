@@ -1,28 +1,13 @@
 "use client";
-
-import { getAuthToken } from "@/lib/strava-auth";
-import styles from "./page.module.css";
-import { useEffect, useState } from "react";
+import { hasStravaCode } from "@/lib/auth";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  const [authUrl, setAuthUrl] = useState("");
+  const hastAuthCode = hasStravaCode();
 
-  useEffect(() => {
-    const getUrl = async () => {
-      setAuthUrl(await getAuthToken());
-    };
-    getUrl();
-  });
-
-  return (
-    <main className={styles.main}>
-      <button
-        onClick={() => {
-          window.location.href = authUrl;
-        }}
-      >
-        button to auth
-      </button>
-    </main>
-  );
+  if (hastAuthCode) {
+    return redirect("/start");
+  } else {
+    return redirect("/strava-auth/login");
+  }
 }

@@ -26,7 +26,7 @@ export const getAuthToken = async () => {
   const url = new URL("https://www.strava.com/oauth/mobile/authorize");
   const { stravaClientId } = envGuard();
 
-  const redirectUri = "http://localhost:3000/strava-auth";
+  const redirectUri = "http://localhost:3000/strava-auth/success";
   const responseType = "code";
   const approvalPrompt = "auto";
   const scope = "activity:write,read";
