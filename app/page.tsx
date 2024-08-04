@@ -1,13 +1,17 @@
 "use client";
-import { hasStravaCode } from "@/lib/auth";
+
+import { hasStravaCode } from "@/lib/strava/auth-storage";
 import { redirect } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Home() {
-  const hastAuthCode = hasStravaCode();
+  useEffect(() => {
+    const hastAuthCode = hasStravaCode();
 
-  if (hastAuthCode) {
-    return redirect("/start");
-  } else {
-    return redirect("/strava-auth/login");
-  }
+    if (hastAuthCode) {
+      return redirect("/start");
+    } else {
+      return redirect("/strava-auth/login");
+    }
+  }, []);
 }

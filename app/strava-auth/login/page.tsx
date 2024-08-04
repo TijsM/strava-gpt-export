@@ -1,6 +1,6 @@
 "use client";
 
-import { getAuthToken } from "@/lib/strava-auth";
+import { getAuthToken } from "@/lib/strava/auth";
 import { useEffect, useState } from "react";
 
 export default function LoginPage() {

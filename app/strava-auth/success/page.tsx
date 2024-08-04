@@ -1,6 +1,9 @@
 "use client";
 
-import { redirect } from "next/navigation";
+import { getBearerTokenForAuthCode } from "@/lib/strava/auth";
+import { storeAuthResponse } from "@/lib/strava/auth-storage";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 const StravaAuthPage = ({
   params,
@@ -9,12 +12,27 @@ const StravaAuthPage = ({
   params: { slug: string };
   searchParams?: { [key: string]: string | string[] | undefined };
 }) => {
-  const token = searchParams?.code;
+  const router = useRouter();
 
-  console.log("setting token", token);
-  localStorage.setItem("stravaCode", token as string);
+  const code = searchParams?.code;
 
-  redirect("/");
+  useEffect(() => {
+    const getToken = async () => {
+      const response = await getBearerTokenForAuthCode(code as string);
+
+      if (response) {
+        console.log("response", response);
+
+        storeAuthResponse(response);
+        console.log();
+        router.push("/");
+      }
+    };
+
+    if (code) {
+      getToken();
+    }
+  }, [code]);
 };
 
 export default StravaAuthPage;
