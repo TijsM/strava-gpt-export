@@ -6,7 +6,7 @@ import { searchActivities } from "@/lib/strava/searchActivities";
 import { StravaActivity } from "@/schemas/strava.schema";
 import { useEffect, useState } from "react";
 
-export const StartPage = () => {
+const StartPage = () => {
   const [activities, setActivities] = useState<StravaActivity[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -16,6 +16,7 @@ export const StartPage = () => {
       const stravaAuthToken = getStravaCode()?.access_token;
 
       if (!stravaAuthToken) {
+        setLoading(false);
         return;
       }
 
