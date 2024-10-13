@@ -1,5 +1,6 @@
 import { ActivityType } from "@/schemas/strava.schema";
 import React from "react";
+import { styled } from "styled-components";
 
 type FilterProps = {
   activityTypes: ActivityType[];
@@ -17,7 +18,7 @@ export const Filter = ({
   };
 
   return (
-    <div>
+    <StContainer>
       <label htmlFor="activity-type">Choose an activity: </label>
       <select
         name="activity-type"
@@ -31,6 +32,10 @@ export const Filter = ({
           </option>
         ))}
       </select>
-    </div>
+    </StContainer>
   );
 };
+
+const StContainer = styled.div`
+  margin-bottom: 16px;
+`;

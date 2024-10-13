@@ -2,7 +2,7 @@
 
 import { StravaActivity } from "@/schemas/strava.schema";
 import { formatDateAsEpoch } from "../formatDateAsEpoch";
-import { checkStravaResponseStatus } from "./authGuard";
+import { checkStravaResponseStatus } from "../strava-auth/authGuard";
 
 type SearchActivitiesParams = {
   token: string;
@@ -48,8 +48,6 @@ export const searchActivities = async ({
     allFetched = json.length < 100;
     page++;
   }
-
-  console.log(allActivities);
 
   return allActivities;
 };

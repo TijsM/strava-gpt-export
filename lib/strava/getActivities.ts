@@ -1,6 +1,6 @@
 "use server";
 
-import { checkStravaResponseStatus } from "./authGuard";
+import { checkStravaResponseStatus } from "../strava-auth/authGuard";
 
 export const getActivities = async (token: string) => {
   const params = new URLSearchParams();
@@ -22,6 +22,5 @@ export const getActivities = async (token: string) => {
   }
 
   const json = await response.json();
-  console.log("json", json);
   return json;
 };

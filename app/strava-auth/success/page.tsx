@@ -1,7 +1,7 @@
 "use client";
 
-import { getBearerTokenForAuthCode } from "@/lib/strava/auth";
-import { storeAuthResponse } from "@/lib/strava/auth-storage";
+import { getBearerTokenForAuthCode } from "@/lib/strava-auth/auth";
+import { storeAuthResponse } from "@/lib/strava-auth/auth-storage";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 
@@ -22,7 +22,6 @@ const StravaAuthPage = ({
 
       if (response) {
         storeAuthResponse(response);
-        console.log();
         router.push("/");
       }
     };
@@ -30,7 +29,7 @@ const StravaAuthPage = ({
     if (code) {
       getToken();
     }
-  }, [code]);
+  }, [code, router]);
 };
 
 export default StravaAuthPage;

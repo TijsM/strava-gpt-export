@@ -1,7 +1,7 @@
 "use client";
 
 import { Stats } from "@/components/Stats";
-import { getStravaCode } from "@/lib/strava/auth-storage";
+import { getStravaCode } from "@/lib/strava-auth/auth-storage";
 import { searchActivities } from "@/lib/strava/searchActivities";
 import { StravaActivity } from "@/schemas/strava.schema";
 import { useEffect, useState } from "react";

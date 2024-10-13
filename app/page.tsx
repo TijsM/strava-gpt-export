@@ -1,6 +1,6 @@
 "use client";
 
-import { hasStravaCode } from "@/lib/strava/auth-storage";
+import { hasStravaCode } from "@/lib/strava-auth/auth-storage";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 

@@ -8,6 +8,14 @@ import { Stat } from "./Stat";
 import html2canvas from "html2canvas";
 import { useMemo, useRef, useState } from "react";
 import { Filter } from "./Filter";
+import {
+  getAmountOfActivities,
+  getAverageHeartRate,
+  getTotalDistance,
+  getTotalElevationGain,
+  getTotalKudos,
+  getTotalTime,
+} from "@/lib/calculateStats";
 
 type StatsProps = {
   activities: StravaActivity[];
@@ -34,33 +42,6 @@ export const Stats = ({ activities, loading }: StatsProps) => {
     return <StStatContainer>No activities loading</StStatContainer>;
   }
 
-  const totalDistance = filteredActivities.reduce(
-    (acc, curr) => acc + curr.distance,
-    0
-  );
-
-  const totalTime = filteredActivities.reduce(
-    (acc, curr) => acc + curr.moving_time,
-    0
-  );
-
-  const averageHeartRate = filteredActivities.reduce(
-    (acc, curr) => acc + (curr?.average_heartrate ?? 0),
-    0
-  );
-
-  const amountOfActivities = filteredActivities.length;
-
-  const totalMovingTime = filteredActivities.reduce(
-    (acc, curr) => acc + curr.moving_time,
-    0
-  );
-
-  const totalKudos = filteredActivities.reduce(
-    (acc, curr) => acc + curr.kudos_count,
-    0
-  );
-
   const exportAsImage = async () => {
     if (frameRef.current) {
       const canvas = await html2canvas(frameRef.current, {
@@ -80,15 +61,21 @@ export const Stats = ({ activities, loading }: StatsProps) => {
         onSelecct={setSelectedActivity}
       />
       <StFrame ref={frameRef}>
-        <Stat label="Total distance" value={totalDistance.toFixed(2)} />
-        <Stat label="Total time" value={totalTime.toFixed(2)} />
-        <Stat label="Average heart rate" value={averageHeartRate.toFixed(2)} />
+        <Stat label="Distance" value={getTotalDistance(filteredActivities)} />
+        <Stat label="Time" value={getTotalTime(filteredActivities)} />
         <Stat
-          label="Amount of activities"
-          value={amountOfActivities.toString()}
+          label="Average heart rate"
+          value={getAverageHeartRate(filteredActivities)}
         />
-        <Stat label="Total moving time" value={totalMovingTime.toFixed(2)} />
-        <Stat label="Total kudos" value={totalKudos.toString()} />
+        <Stat
+          label="Activities"
+          value={getAmountOfActivities(filteredActivities)}
+        />
+        <Stat label="Kudos" value={getTotalKudos(filteredActivities)} />
+        <Stat
+          label="Elevation gain"
+          value={getTotalElevationGain(filteredActivities)}
+        />
       </StFrame>
       <ExportButton onClick={exportAsImage}>Export as PNG</ExportButton>{" "}
     </StStatContainer>
@@ -108,12 +95,13 @@ const StFrame = styled.div`
   display: grid;
   padding: 24px;
   grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
 `;
 
 const ExportButton = styled.button`
   margin-top: 20px;
   padding: 10px 20px;
-  background-color: #007bff;
+  background-color: #fc4c02;
   color: white;
   border: none;
   border-radius: 5px;
@@ -121,6 +109,6 @@ const ExportButton = styled.button`
   font-size: 16px;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #aa3300;
   }
 `;
