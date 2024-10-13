@@ -8,7 +8,7 @@ export default function LoginPage() {
 
   useEffect(() => {
     const getUrl = async () => {
-      setAuthUrl(await getAuthToken());
+      setAuthUrl(await getAuthToken(window.location.origin));
     };
     getUrl();
   });

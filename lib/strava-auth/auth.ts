@@ -22,11 +22,12 @@ export const envGuard = async () => {
     };
 };
 
-export const getAuthToken = async () => {
+export const getAuthToken = async (host: string) => {
   const url = new URL("https://www.strava.com/oauth/mobile/authorize");
   const envVars = await envGuard();
 
-  const redirectUri = "http://localhost:3000/strava-auth/success";
+  const redirectUri = `${host}/strava-auth/success`;
+
   const responseType = "code";
   const approvalPrompt = "auto";
   const scope = "activity:read_all";
