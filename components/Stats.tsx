@@ -1,8 +1,13 @@
-import { StravaActivity } from "@/schemas/strava.schema";
+import {
+  ActivityType,
+  StravaActivity,
+  supportedActivityTypes,
+} from "@/schemas/strava.schema";
 import styled from "styled-components";
 import { Stat } from "./Stat";
-import html2canvas from "html2canvas"; // Import html2canvas
-import { useRef } from "react"; // Import useRef to reference the component
+import html2canvas from "html2canvas";
+import { useMemo, useRef, useState } from "react";
+import { Filter } from "./Filter";
 
 type StatsProps = {
   activities: StravaActivity[];
@@ -10,36 +15,48 @@ type StatsProps = {
 };
 
 export const Stats = ({ activities, loading }: StatsProps) => {
-  const frameRef = useRef<HTMLDivElement>(null); // Create a ref to the StFrame div
+  const frameRef = useRef<HTMLDivElement>(null);
+  const [selectedActivity, setSelectedActivity] = useState<ActivityType>(
+    supportedActivityTypes[0]
+  );
+  const filteredActivities = useMemo(() => {
+    if (!activities) {
+      return [];
+    }
+    return activities.filter((activity) => activity.type === selectedActivity);
+  }, [activities, selectedActivity]);
 
   if (loading) {
     return <StStatContainer>Loading...</StStatContainer>;
   }
 
-  if (!activities.length) {
+  if (!activities?.length) {
     return <StStatContainer>No activities loading</StStatContainer>;
   }
 
-  const totalDistance = activities.reduce(
+  const totalDistance = filteredActivities.reduce(
     (acc, curr) => acc + curr.distance,
     0
   );
 
-  const totalTime = activities.reduce((acc, curr) => acc + curr.moving_time, 0);
-
-  const averageHeartRate = activities.reduce(
-    (acc, curr) => acc + (curr?.average_heartrate ?? 0),
-    0
-  );
-
-  const amountOfActivities = activities.length;
-
-  const totalMovingTime = activities.reduce(
+  const totalTime = filteredActivities.reduce(
     (acc, curr) => acc + curr.moving_time,
     0
   );
 
-  const totalKudos = activities.reduce(
+  const averageHeartRate = filteredActivities.reduce(
+    (acc, curr) => acc + (curr?.average_heartrate ?? 0),
+    0
+  );
+
+  const amountOfActivities = filteredActivities.length;
+
+  const totalMovingTime = filteredActivities.reduce(
+    (acc, curr) => acc + curr.moving_time,
+    0
+  );
+
+  const totalKudos = filteredActivities.reduce(
     (acc, curr) => acc + curr.kudos_count,
     0
   );
@@ -50,7 +67,7 @@ export const Stats = ({ activities, loading }: StatsProps) => {
         backgroundColor: null,
       });
       const link = document.createElement("a");
-      link.download = "stats.png"; // Name the image
+      link.download = "strava-2024.png";
       link.href = canvas.toDataURL("image/png");
       link.click();
     }
@@ -58,6 +75,10 @@ export const Stats = ({ activities, loading }: StatsProps) => {
 
   return (
     <StStatContainer>
+      <Filter
+        activityTypes={supportedActivityTypes}
+        onSelecct={setSelectedActivity}
+      />
       <StFrame ref={frameRef}>
         <Stat label="Total distance" value={totalDistance.toFixed(2)} />
         <Stat label="Total time" value={totalTime.toFixed(2)} />
@@ -70,7 +91,6 @@ export const Stats = ({ activities, loading }: StatsProps) => {
         <Stat label="Total kudos" value={totalKudos.toString()} />
       </StFrame>
       <ExportButton onClick={exportAsImage}>Export as PNG</ExportButton>{" "}
-      {/* Add a button to export */}
     </StStatContainer>
   );
 };

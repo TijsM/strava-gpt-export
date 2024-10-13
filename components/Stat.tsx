@@ -19,13 +19,17 @@ const StContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 8px;
 `;
 
 const StLabel = styled.div`
-  font-size: 16px;
-  font-weight: bold;
+  font-size: 8px;
+  font-weight: normal;
+  color: #3d3d3d;
+  margin-bottom: 4px;
 `;
 
 const StValue = styled.div`
-  font-size: 24px;
+  font-size: 16px;
+  font-weight: bold;
 `;
