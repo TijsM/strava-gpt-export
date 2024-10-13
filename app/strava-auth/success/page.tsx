@@ -21,8 +21,6 @@ const StravaAuthPage = ({
       const response = await getBearerTokenForAuthCode(code as string);
 
       if (response) {
-        console.log("response", response);
-
         storeAuthResponse(response);
         console.log();
         router.push("/");

@@ -2,6 +2,7 @@
 
 import { getStravaCode } from "@/lib/strava/auth-storage";
 import { getActivities } from "@/lib/strava/getActivities";
+import { searchActivities } from "@/lib/strava/searchActivities";
 import { useEffect } from "react";
 
 export const StartPage = () => {
@@ -13,7 +14,12 @@ export const StartPage = () => {
         return;
       }
 
-      const activities = await getActivities(stravaAuthToken);
+      const activities = await searchActivities({
+        token: stravaAuthToken,
+        before: new Date(2024, 11, 31),
+        after: new Date(2024, 0, 31),
+      });
+
       console.log("activities", activities);
     };
 
