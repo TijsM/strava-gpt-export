@@ -1,13 +1,18 @@
 "use client";
 
+import { Stats } from "@/components/Stats";
 import { getStravaCode } from "@/lib/strava/auth-storage";
-import { getActivities } from "@/lib/strava/getActivities";
 import { searchActivities } from "@/lib/strava/searchActivities";
-import { useEffect } from "react";
+import { StravaActivity } from "@/schemas/strava.schema";
+import { useEffect, useState } from "react";
 
 export const StartPage = () => {
+  const [activities, setActivities] = useState<StravaActivity[]>([]);
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     const startFetch = async () => {
+      setLoading(true);
       const stravaAuthToken = getStravaCode()?.access_token;
 
       if (!stravaAuthToken) {
@@ -20,13 +25,14 @@ export const StartPage = () => {
         after: new Date(2024, 0, 31),
       });
 
-      console.log("activities", activities);
+      setLoading(false);
+      setActivities(activities);
     };
 
     startFetch();
   }, []);
 
-  return <div>Start page</div>;
+  return <Stats activities={activities} loading={loading} />;
 };
 
 export default StartPage;

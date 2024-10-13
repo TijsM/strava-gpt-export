@@ -1,5 +1,6 @@
 "use server";
 
+import { StravaActivity } from "@/schemas/strava.schema";
 import { formatDateAsEpoch } from "../formatDateAsEpoch";
 import { checkStravaResponseStatus } from "./authGuard";
 
@@ -13,7 +14,7 @@ export const searchActivities = async ({
   token,
   before,
   after,
-}: SearchActivitiesParams) => {
+}: SearchActivitiesParams): Promise<StravaActivity[]> => {
   const headers = {
     Authorization: `Bearer ${token}`,
   };
@@ -22,7 +23,7 @@ export const searchActivities = async ({
     headers,
   };
 
-  const AllActivities = [];
+  const allActivities: StravaActivity[] = [];
   let allFetched = false;
   let page = 1;
 
@@ -39,16 +40,16 @@ export const searchActivities = async ({
     const response = await fetch(url, options);
     if (!response.ok) {
       allFetched = true;
-      console.log("response", response);
       checkStravaResponseStatus(response);
     }
     const json = await response.json();
 
-    AllActivities.push(...json);
+    allActivities.push(...json);
     allFetched = json.length < 100;
     page++;
   }
 
-  console.log("search response", AllActivities);
-  return AllActivities;
+  console.log(allActivities);
+
+  return allActivities;
 };

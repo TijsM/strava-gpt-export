@@ -1,6 +1,9 @@
 "use client";
 
-import { authResponseSchema, StravaAuthResponse } from "./auth.types";
+import {
+  authResponseSchema,
+  StravaAuthResponse,
+} from "../../schemas/auth.schema";
 
 const storageKeys = {
   authResponse: "stravaAuthResponse",
