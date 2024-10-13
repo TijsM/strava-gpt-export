@@ -14,12 +14,16 @@ export const storeAuthResponse = (response: any) => {
     return;
   }
 
-  const validatedSchema = authResponseSchema.parse(response);
+  try {
+    const validatedSchema = authResponseSchema.parse(response);
 
-  localStorage?.setItem(
-    storageKeys.authResponse,
-    JSON.stringify(validatedSchema)
-  );
+    localStorage?.setItem(
+      storageKeys.authResponse,
+      JSON.stringify(validatedSchema)
+    );
+  } catch (e) {
+    console.error("error storing auth response", e);
+  }
 };
 
 export const getStravaCode = (): StravaAuthResponse | null => {
