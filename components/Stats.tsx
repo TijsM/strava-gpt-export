@@ -16,6 +16,7 @@ import {
   getTotalKudos,
   getTotalTime,
 } from "@/lib/calculateStats";
+import { logEvent } from "@/lib/analytics/posthog";
 
 type StatsProps = {
   activities: StravaActivity[];
@@ -43,6 +44,11 @@ export const Stats = ({ activities, loading }: StatsProps) => {
   }
 
   const exportAsImage = async () => {
+    logEvent({
+      action: "click",
+      name: "export_image",
+    });
+
     if (frameRef.current) {
       const canvas = await html2canvas(frameRef.current, {
         backgroundColor: null,

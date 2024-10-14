@@ -22,7 +22,7 @@ export const storeAuthResponse = (response: any) => {
       JSON.stringify(validatedSchema)
     );
   } catch (e) {
-    console.error("error storing auth response", e);
+    // do nothing for now when schema is not valid
   }
 };
 

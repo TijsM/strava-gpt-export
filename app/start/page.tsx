@@ -1,6 +1,7 @@
 "use client";
 
 import { Stats } from "@/components/Stats";
+import { useLogPageView } from "@/lib/analytics/posthog";
 import { getStravaCode } from "@/lib/strava-auth/auth-storage";
 import { searchActivities } from "@/lib/strava/searchActivities";
 import { StravaActivity } from "@/schemas/strava.schema";
@@ -9,6 +10,8 @@ import { useEffect, useState } from "react";
 const StartPage = () => {
   const [activities, setActivities] = useState<StravaActivity[]>([]);
   const [loading, setLoading] = useState(false);
+
+  useLogPageView();
 
   useEffect(() => {
     const startFetch = async () => {

@@ -1,11 +1,13 @@
 "use client";
 
+import { logEvent, useLogPageView } from "@/lib/analytics/posthog";
 import { getAuthToken } from "@/lib/strava-auth/auth";
 import { useEffect, useState } from "react";
 import { styled } from "styled-components";
 
 export default function LoginPage() {
   const [authUrl, setAuthUrl] = useState("");
+  useLogPageView();
 
   useEffect(() => {
     const getUrl = async () => {
@@ -19,9 +21,13 @@ export default function LoginPage() {
       <StButton
         onClick={() => {
           window.location.href = authUrl;
+          logEvent({
+            action: "click",
+            name: "authenticate_button",
+          });
         }}
       >
-        button to auth
+        Log in with strava
       </StButton>
     </StMain>
   );
