@@ -6,7 +6,7 @@ export const getTotalDistance = (activities: StravaActivity[]) => {
     0
   );
 
-  return (totalDistanceInM / 1000).toFixed(2).toString();
+  return `${(totalDistanceInM / 1000).toFixed(2).toString()} km`;
 };
 
 export const getTotalTime = (activities: StravaActivity[]) => {
