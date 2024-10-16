@@ -11,6 +11,7 @@ import { Filter } from "./Filter";
 import {
   getAmountOfActivities,
   getAverageHeartRate,
+  getAverageSpeed,
   getTotalDistance,
   getTotalElevationGain,
   getTotalKudos,
@@ -23,11 +24,18 @@ type StatsProps = {
   loading: boolean;
 };
 
+const supportedColors = ["black", "white"];
+
 export const Stats = ({ activities, loading }: StatsProps) => {
   const frameRef = useRef<HTMLDivElement>(null);
+
   const [selectedActivity, setSelectedActivity] = useState<ActivityType>(
     supportedActivityTypes[0]
   );
+  const [selectedColor, setSelectedColor] = useState<string>(
+    supportedColors[0]
+  );
+
   const filteredActivities = useMemo(() => {
     if (!activities) {
       return [];
@@ -36,11 +44,19 @@ export const Stats = ({ activities, loading }: StatsProps) => {
   }, [activities, selectedActivity]);
 
   if (loading) {
-    return <StStatContainer>Loading...</StStatContainer>;
+    return (
+      <StStatContainer selectedTextColor={selectedColor}>
+        Loading...
+      </StStatContainer>
+    );
   }
 
   if (!activities?.length) {
-    return <StStatContainer>No activities loading</StStatContainer>;
+    return (
+      <StStatContainer selectedTextColor={selectedColor}>
+        No activities loading
+      </StStatContainer>
+    );
   }
 
   const exportAsImage = async () => {
@@ -61,26 +77,50 @@ export const Stats = ({ activities, loading }: StatsProps) => {
   };
 
   return (
-    <StStatContainer>
+    <StStatContainer selectedTextColor={selectedColor}>
       <Filter
         activityTypes={supportedActivityTypes}
-        onSelecct={setSelectedActivity}
+        onSelectActivityType={setSelectedActivity}
+        selectedActivity={selectedActivity}
+        supportedColors={supportedColors}
+        onSelectColor={setSelectedColor}
+        currentColor={selectedColor}
       />
       <StFrame ref={frameRef}>
-        <Stat label="Distance" value={getTotalDistance(filteredActivities)} />
-        <Stat label="Time" value={getTotalTime(filteredActivities)} />
         <Stat
+          selectedTextColor={selectedColor}
+          label="Distance"
+          value={getTotalDistance(filteredActivities)}
+        />
+        <Stat
+          selectedTextColor={selectedColor}
+          label="Time"
+          value={getTotalTime(filteredActivities)}
+        />
+        <Stat
+          selectedTextColor={selectedColor}
           label="Average heart rate"
           value={getAverageHeartRate(filteredActivities)}
         />
         <Stat
+          selectedTextColor={selectedColor}
           label="Activities"
           value={getAmountOfActivities(filteredActivities)}
         />
-        <Stat label="Kudos" value={getTotalKudos(filteredActivities)} />
         <Stat
+          selectedTextColor={selectedColor}
+          label="Kudos"
+          value={getTotalKudos(filteredActivities)}
+        />
+        <Stat
+          selectedTextColor={selectedColor}
           label="Elevation gain"
           value={getTotalElevationGain(filteredActivities)}
+        />
+        <Stat
+          selectedTextColor={selectedColor}
+          label="Average speed"
+          value={getAverageSpeed(filteredActivities, selectedActivity)}
         />
       </StFrame>
       <ExportButton onClick={exportAsImage}>Export as PNG</ExportButton>{" "}
@@ -88,16 +128,18 @@ export const Stats = ({ activities, loading }: StatsProps) => {
   );
 };
 
-const StStatContainer = styled.div`
+const StStatContainer = styled.div<{ selectedTextColor: string }>`
   display: flex;
   min-height: 100vh;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  transition: background-color 0.3s ease-in-out;
+  background-color: ${(props) =>
+    props.selectedTextColor === "black" ? "white" : "black"};
 `;
 
 const StFrame = styled.div`
-  border: 1px solid black;
   display: grid;
   padding: 24px;
   grid-template-columns: repeat(2, 1fr);

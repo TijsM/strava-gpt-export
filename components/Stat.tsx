@@ -3,13 +3,14 @@ import { styled } from "styled-components";
 interface StatProps {
   label: string;
   value: string;
+  selectedTextColor: string;
 }
 
-export const Stat = ({ label, value }: StatProps) => {
+export const Stat = ({ label, value, selectedTextColor }: StatProps) => {
   return (
     <StContainer>
       <StLabel>{label}</StLabel>
-      <StValue>{value}</StValue>
+      <StValue selectedTextColor={selectedTextColor}>{value}</StValue>
     </StContainer>
   );
 };
@@ -29,7 +30,8 @@ const StLabel = styled.div`
   margin-bottom: 4px;
 `;
 
-const StValue = styled.div`
+const StValue = styled.div<{ selectedTextColor: string }>`
   font-size: 16px;
   font-weight: bold;
+  color: ${(props) => props.selectedTextColor};
 `;
