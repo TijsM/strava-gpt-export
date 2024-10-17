@@ -18,7 +18,8 @@ import {
   getTotalTime,
 } from "@/lib/calculateStats";
 import { logEvent } from "@/lib/analytics/posthog";
-import { useDarkModeStore } from "@/stores/darkMode";
+import { useDarkModeStore } from "@/stores/darkModeStore";
+import { useFilterStore } from "@/stores/filterStore";
 
 type StatsProps = {
   activities: StravaActivity[];
@@ -29,9 +30,7 @@ export const Stats = ({ activities, loading }: StatsProps) => {
   const frameRef = useRef<HTMLDivElement>(null);
   const isDark = useDarkModeStore((state) => state.isDark);
 
-  const [selectedActivity, setSelectedActivity] = useState<ActivityType>(
-    supportedActivityTypes[0]
-  );
+  const selectedActivity = useFilterStore((state) => state.selectedActivity);
 
   const filteredActivities = useMemo(() => {
     if (!activities) {
@@ -75,11 +74,7 @@ export const Stats = ({ activities, loading }: StatsProps) => {
 
   return (
     <StStatContainer selectedTextColor={isDark ? "white" : "black"}>
-      <Filter
-        activityTypes={supportedActivityTypes}
-        onSelectActivityType={setSelectedActivity}
-        selectedActivity={selectedActivity}
-      />
+      <Filter activityTypes={supportedActivityTypes} />
       <StFrame ref={frameRef}>
         <Stat label="Distance" value={getTotalDistance(filteredActivities)} />
         <Stat label="Time" value={getTotalTime(filteredActivities)} />

@@ -1,66 +1,100 @@
 import { ActivityType } from "@/schemas/strava.schema";
-import { useDarkModeStore } from "@/stores/darkMode";
+import { useDarkModeStore } from "@/stores/darkModeStore";
 import React from "react";
 import { styled } from "styled-components";
+import { SettingsCard } from "./SettingsCard";
+import { FaBicycle, FaRunning, FaSquare, FaSwimmer } from "react-icons/fa";
+import { useFilterStore } from "@/stores/filterStore";
 
 const supportedColors = ["black", "white"];
 
 type FilterProps = {
   activityTypes: ActivityType[];
-  onSelectActivityType: (activityType: ActivityType) => void;
-  selectedActivity: ActivityType;
 };
 
-export const Filter = ({
-  activityTypes,
-  onSelectActivityType,
-  selectedActivity,
-}: FilterProps) => {
-  const changeDarkMode = useDarkModeStore((state) => state.changeDarkMode);
+export const Filter = ({ activityTypes }: FilterProps) => {
   const isDark = useDarkModeStore((state) => state.isDark);
+  const changeDarkMode = useDarkModeStore((state) => state.changeDarkMode);
 
-  const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    onSelectActivityType(event.target.value as ActivityType);
+  const selectedActivity = useFilterStore((state) => state.selectedActivity);
+  const changeSelectedActivity = useFilterStore(
+    (state) => state.changeSelectedActivity
+  );
+
+  const handleTypeChange = (activityType: ActivityType) => {
+    changeSelectedActivity(activityType);
   };
 
-  const handleColorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log("click", event.target.value);
-    changeDarkMode(event.target.value === "white");
+  const handleColorChange = (color: "black" | "white") => {
+    changeDarkMode(color === "black");
   };
+
+  const textColor = isDark ? "white" : "black";
 
   return (
-    <StContainer selectedTextColor={isDark ? "white" : "black"}>
-      <div>
-        <label htmlFor="activity-type">Choose an activity: </label>
-        <select
-          name="activity-type"
-          id="activity-type"
-          value={selectedActivity}
-          onChange={handleTypeChange}
-        >
-          {activityTypes.map((activityType) => (
-            <option key={activityType} value={activityType}>
-              {activityType}
-            </option>
-          ))}
-        </select>
-      </div>
+    <StContainer selectedTextColor={textColor}>
+      <StFilterRow>
+        {activityTypes.map((activityType) => {
+          if (activityType === "Run") {
+            return (
+              <SettingsCard
+                key={activityType}
+                icon={<FaRunning color={textColor} />}
+                title={activityType}
+                selected={activityType === selectedActivity}
+                onSelect={() => handleTypeChange(activityType)}
+              />
+            );
+          }
+          if (activityType === "Swim") {
+            return (
+              <SettingsCard
+                key={activityType}
+                icon={<FaSwimmer color={textColor} />}
+                title={activityType}
+                selected={activityType === selectedActivity}
+                onSelect={() => handleTypeChange(activityType)}
+              />
+            );
+          }
+          if (activityType === "Ride") {
+            return (
+              <SettingsCard
+                key={activityType}
+                icon={<FaBicycle color={textColor} />}
+                title={activityType}
+                selected={activityType === selectedActivity}
+                onSelect={() => handleTypeChange(activityType)}
+              />
+            );
+          }
+        })}
+      </StFilterRow>
 
-      <div>
-        <label htmlFor="color">Choose a text color: </label>
-        <select
-          name="color"
-          id="color"
-          value={isDark ? "white" : "black"}
-          onChange={handleColorChange}
-        >
-          {supportedColors.map((color) => (
-            <option key={color} value={color}>
-              {color}
-            </option>
-          ))}
-        </select>
-      </div>
+      <StFilterRow>
+        {supportedColors.map((color) => {
+          if (color === "black") {
+            return (
+              <SettingsCard
+                key={color}
+                icon={<FaSquare color={textColor} />}
+                title={color}
+                selected={isDark}
+                onSelect={() => handleColorChange("black")}
+              />
+            );
+          }
+          return (
+            <SettingsCard
+              key={color}
+              icon={<FaSquare color={textColor} />}
+              title={color}
+              selected={isDark}
+              onSelect={() => handleColorChange("white")}
+            />
+          );
+        })}
+      </StFilterRow>
     </StContainer>
   );
 };
@@ -68,4 +102,12 @@ export const Filter = ({
 const StContainer = styled.div<{ selectedTextColor: string }>`
   margin-bottom: 16px;
   color: ${(props) => props.selectedTextColor};
+`;
+
+const StFilterRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  gap: 8px;
 `;

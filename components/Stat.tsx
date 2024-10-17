@@ -1,4 +1,4 @@
-import { useDarkModeStore } from "@/stores/darkMode";
+import { useDarkModeStore } from "@/stores/darkModeStore";
 import { styled } from "styled-components";
 
 interface StatProps {
