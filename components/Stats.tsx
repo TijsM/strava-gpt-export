@@ -18,22 +18,19 @@ import {
   getTotalTime,
 } from "@/lib/calculateStats";
 import { logEvent } from "@/lib/analytics/posthog";
+import { useDarkModeStore } from "@/stores/darkMode";
 
 type StatsProps = {
   activities: StravaActivity[];
   loading: boolean;
 };
 
-const supportedColors = ["black", "white"];
-
 export const Stats = ({ activities, loading }: StatsProps) => {
   const frameRef = useRef<HTMLDivElement>(null);
+  const isDark = useDarkModeStore((state) => state.isDark);
 
   const [selectedActivity, setSelectedActivity] = useState<ActivityType>(
     supportedActivityTypes[0]
-  );
-  const [selectedColor, setSelectedColor] = useState<string>(
-    supportedColors[0]
   );
 
   const filteredActivities = useMemo(() => {
@@ -45,7 +42,7 @@ export const Stats = ({ activities, loading }: StatsProps) => {
 
   if (loading) {
     return (
-      <StStatContainer selectedTextColor={selectedColor}>
+      <StStatContainer selectedTextColor={isDark ? "white" : "black"}>
         Loading...
       </StStatContainer>
     );
@@ -53,7 +50,7 @@ export const Stats = ({ activities, loading }: StatsProps) => {
 
   if (!activities?.length) {
     return (
-      <StStatContainer selectedTextColor={selectedColor}>
+      <StStatContainer selectedTextColor={isDark ? "white" : "black"}>
         No activities loading
       </StStatContainer>
     );
@@ -77,48 +74,29 @@ export const Stats = ({ activities, loading }: StatsProps) => {
   };
 
   return (
-    <StStatContainer selectedTextColor={selectedColor}>
+    <StStatContainer selectedTextColor={isDark ? "white" : "black"}>
       <Filter
         activityTypes={supportedActivityTypes}
         onSelectActivityType={setSelectedActivity}
         selectedActivity={selectedActivity}
-        supportedColors={supportedColors}
-        onSelectColor={setSelectedColor}
-        currentColor={selectedColor}
       />
       <StFrame ref={frameRef}>
+        <Stat label="Distance" value={getTotalDistance(filteredActivities)} />
+        <Stat label="Time" value={getTotalTime(filteredActivities)} />
         <Stat
-          selectedTextColor={selectedColor}
-          label="Distance"
-          value={getTotalDistance(filteredActivities)}
-        />
-        <Stat
-          selectedTextColor={selectedColor}
-          label="Time"
-          value={getTotalTime(filteredActivities)}
-        />
-        <Stat
-          selectedTextColor={selectedColor}
           label="Average heart rate"
           value={getAverageHeartRate(filteredActivities)}
         />
         <Stat
-          selectedTextColor={selectedColor}
           label="Activities"
           value={getAmountOfActivities(filteredActivities)}
         />
+        <Stat label="Kudos" value={getTotalKudos(filteredActivities)} />
         <Stat
-          selectedTextColor={selectedColor}
-          label="Kudos"
-          value={getTotalKudos(filteredActivities)}
-        />
-        <Stat
-          selectedTextColor={selectedColor}
           label="Elevation gain"
           value={getTotalElevationGain(filteredActivities)}
         />
         <Stat
-          selectedTextColor={selectedColor}
           label="Average speed"
           value={getAverageSpeed(filteredActivities, selectedActivity)}
         />

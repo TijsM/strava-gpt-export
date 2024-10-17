@@ -1,16 +1,18 @@
+import { useDarkModeStore } from "@/stores/darkMode";
 import { styled } from "styled-components";
 
 interface StatProps {
   label: string;
   value: string;
-  selectedTextColor: string;
 }
 
-export const Stat = ({ label, value, selectedTextColor }: StatProps) => {
+export const Stat = ({ label, value }: StatProps) => {
+  const isDark = useDarkModeStore((state) => state.isDark);
+
   return (
     <StContainer>
       <StLabel>{label}</StLabel>
-      <StValue selectedTextColor={selectedTextColor}>{value}</StValue>
+      <StValue selectedTextColor={isDark ? "white" : "black"}>{value}</StValue>
     </StContainer>
   );
 };

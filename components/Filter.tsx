@@ -1,35 +1,35 @@
 import { ActivityType } from "@/schemas/strava.schema";
+import { useDarkModeStore } from "@/stores/darkMode";
 import React from "react";
 import { styled } from "styled-components";
+
+const supportedColors = ["black", "white"];
 
 type FilterProps = {
   activityTypes: ActivityType[];
   onSelectActivityType: (activityType: ActivityType) => void;
   selectedActivity: ActivityType;
-
-  supportedColors: string[];
-  onSelectColor: (color: string) => void;
-  currentColor: string;
 };
 
 export const Filter = ({
   activityTypes,
   onSelectActivityType,
   selectedActivity,
-  supportedColors,
-  onSelectColor,
-  currentColor,
 }: FilterProps) => {
+  const changeDarkMode = useDarkModeStore((state) => state.changeDarkMode);
+  const isDark = useDarkModeStore((state) => state.isDark);
+
   const handleTypeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     onSelectActivityType(event.target.value as ActivityType);
   };
 
   const handleColorChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    onSelectColor(event.target.value);
+    console.log("click", event.target.value);
+    changeDarkMode(event.target.value === "white");
   };
 
   return (
-    <StContainer selectedTextColor={currentColor}>
+    <StContainer selectedTextColor={isDark ? "white" : "black"}>
       <div>
         <label htmlFor="activity-type">Choose an activity: </label>
         <select
@@ -51,7 +51,7 @@ export const Filter = ({
         <select
           name="color"
           id="color"
-          value={currentColor}
+          value={isDark ? "white" : "black"}
           onChange={handleColorChange}
         >
           {supportedColors.map((color) => (
