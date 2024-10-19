@@ -1,12 +1,11 @@
 import {
-  ActivityType,
   StravaActivity,
   supportedActivityTypes,
 } from "@/schemas/strava.schema";
 import styled from "styled-components";
 import { Stat } from "./Stat";
 import html2canvas from "html2canvas";
-import { useMemo, useRef, useState } from "react";
+import { useMemo, useRef } from "react";
 import { Filter } from "./Filter";
 import {
   getAmountOfActivities,
@@ -86,7 +85,7 @@ export const Stats = ({ activities, loading }: StatsProps) => {
           label="Activities"
           value={getAmountOfActivities(filteredActivities)}
         />
-        <Stat label="Kudos" value={getTotalKudos(filteredActivities)} />
+        {/* <Stat label="Kudos" value={getTotalKudos(filteredActivities)} /> */}
         <Stat
           label="Elevation gain"
           value={getTotalElevationGain(filteredActivities)}

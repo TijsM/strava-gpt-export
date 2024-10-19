@@ -38,6 +38,7 @@ export const searchActivities = async ({
     const url = `https://www.strava.com/api/v3/activities?${params.toString()}`;
 
     const response = await fetch(url, options);
+
     if (!response.ok) {
       allFetched = true;
       checkStravaResponseStatus(response);
