@@ -3,7 +3,7 @@ import { useDarkModeStore } from "@/stores/darkModeStore";
 import React from "react";
 import { styled } from "styled-components";
 import { SettingsCard } from "./SettingsCard";
-import { FaBicycle, FaRunning, FaSquare, FaSwimmer } from "react-icons/fa";
+import { FaBicycle, FaRunning, FaSwimmer } from "react-icons/fa";
 import { useFilterStore } from "@/stores/filterStore";
 
 const supportedColors = ["black", "white"];
@@ -77,8 +77,7 @@ export const Filter = ({ activityTypes }: FilterProps) => {
             return (
               <SettingsCard
                 key={color}
-                icon={<FaSquare color={textColor} />}
-                title={color}
+                title={"White text"}
                 selected={isDark}
                 onSelect={() => handleColorChange("black")}
               />
@@ -87,9 +86,8 @@ export const Filter = ({ activityTypes }: FilterProps) => {
           return (
             <SettingsCard
               key={color}
-              icon={<FaSquare color={textColor} />}
-              title={color}
-              selected={isDark}
+              title={"Black text"}
+              selected={!isDark}
               onSelect={() => handleColorChange("white")}
             />
           );
@@ -110,4 +108,5 @@ const StFilterRow = styled.div`
   justify-content: space-around;
   align-items: center;
   gap: 8px;
+  margin-bottom: 16px;
 `;
