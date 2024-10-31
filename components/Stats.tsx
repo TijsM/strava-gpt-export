@@ -13,7 +13,6 @@ import {
   getAverageSpeed,
   getTotalDistance,
   getTotalElevationGain,
-  getTotalKudos,
   getTotalTime,
 } from "@/lib/calculateStats";
 import { logEvent } from "@/lib/analytics/posthog";
@@ -63,6 +62,7 @@ export const Stats = ({ activities, loading }: StatsProps) => {
     if (frameRef.current) {
       const canvas = await html2canvas(frameRef.current, {
         backgroundColor: null,
+        scale: 4,
       });
       const link = document.createElement("a");
       link.download = "strava-2024.png";
@@ -75,25 +75,28 @@ export const Stats = ({ activities, loading }: StatsProps) => {
     <StStatContainer selectedTextColor={isDark ? "white" : "black"}>
       <Filter activityTypes={supportedActivityTypes} />
       <StFrame ref={frameRef}>
-        <Stat label="Distance" value={getTotalDistance(filteredActivities)} />
-        <Stat label="Time" value={getTotalTime(filteredActivities)} />
-        <Stat
-          label="Average heart rate"
-          value={getAverageHeartRate(filteredActivities)}
-        />
-        <Stat
-          label="Activities"
-          value={getAmountOfActivities(filteredActivities)}
-        />
-        {/* <Stat label="Kudos" value={getTotalKudos(filteredActivities)} /> */}
-        <Stat
-          label="Elevation gain"
-          value={getTotalElevationGain(filteredActivities)}
-        />
-        <Stat
-          label="Average speed"
-          value={getAverageSpeed(filteredActivities, selectedActivity)}
-        />
+        <StStats>
+          <Stat label="Distance" value={getTotalDistance(filteredActivities)} />
+          <Stat label="Time" value={getTotalTime(filteredActivities)} />
+          <Stat
+            label="Average heart rate"
+            value={getAverageHeartRate(filteredActivities)}
+          />
+          <Stat
+            label="Activities"
+            value={getAmountOfActivities(filteredActivities)}
+          />
+          {/* <Stat label="Kudos" value={getTotalKudos(filteredActivities)} /> */}
+          <Stat
+            label="Elevation gain"
+            value={getTotalElevationGain(filteredActivities)}
+          />
+          <Stat
+            label="Average speed"
+            value={getAverageSpeed(filteredActivities, selectedActivity)}
+          />
+        </StStats>
+        <StDisclaimer>Get yours at tijsmartens.be/strava</StDisclaimer>
       </StFrame>
       <ExportButton onClick={exportAsImage}>Export as PNG</ExportButton>{" "}
     </StStatContainer>
@@ -111,12 +114,15 @@ const StStatContainer = styled.div<{ selectedTextColor: string }>`
     props.selectedTextColor === "black" ? "white" : "black"};
 `;
 
-const StFrame = styled.div`
+const StStats = styled.div`
   display: grid;
   padding: 24px;
+  padding-bottom: 0px;
   grid-template-columns: repeat(2, 1fr);
   gap: 8px;
 `;
+
+const StFrame = styled.div``;
 
 const ExportButton = styled.button`
   margin-top: 20px;
@@ -131,4 +137,11 @@ const ExportButton = styled.button`
   &:hover {
     background-color: #aa3300;
   }
+`;
+
+const StDisclaimer = styled.div`
+  margin-top: 16px;
+  font-size: 6px;
+  color: #3d3d3d;
+  text-align: center;
 `;
