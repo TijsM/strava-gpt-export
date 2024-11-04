@@ -7,6 +7,7 @@ import { useEffect } from "react";
 
 export default function Home() {
   useLogPageView();
+
   useEffect(() => {
     const hastAuthCode = hasStravaCode();
 

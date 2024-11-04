@@ -31,7 +31,6 @@ export const getStravaCode = (): StravaAuthResponse | null => {
 
   if (!storageResult) {
     console.error("unvarified - no storageResult", storageResult);
-
     return null;
   }
 
@@ -47,5 +46,5 @@ export const getStravaCode = (): StravaAuthResponse | null => {
 };
 
 export const hasStravaCode = () => {
-  return getStravaCode() !== null;
+  return !!getStravaCode();
 };
