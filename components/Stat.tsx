@@ -11,7 +11,7 @@ export const Stat = ({ label, value }: StatProps) => {
 
   return (
     <StContainer>
-      <StLabel>{label}</StLabel>
+      <StLabel isDark={isDark}>{label}</StLabel>
       <StValue selectedTextColor={isDark ? "white" : "black"}>{value}</StValue>
     </StContainer>
   );
@@ -25,10 +25,10 @@ const StContainer = styled.div`
   padding: 8px;
 `;
 
-const StLabel = styled.div`
+const StLabel = styled.div<{ isDark: boolean }>`
   font-size: 8px;
   font-weight: normal;
-  color: #3d3d3d;
+  color: ${(props) => (props.isDark ? "#707070" : "#5f5f5f")};
   margin-bottom: 4px;
 `;
 
