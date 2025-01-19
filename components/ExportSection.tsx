@@ -1,16 +1,12 @@
 "use client";
 
-import { StravaActivity } from "@/schemas/strava.schema";
-import { useActivitiesStore } from "@/stores/selectedActivitiesStore";
+import { useActivitiesStore } from "@/stores/activitiesStore";
+import { useSelectedActivities } from "@/stores/selectedActivitiesStore";
 import { styled } from "styled-components";
 
-type ExportSectionProps = {
-  activities: StravaActivity[];
-  loading: boolean;
-};
-
-export const ExportSection = ({ activities, loading }: ExportSectionProps) => {
-  const { selectedActivities } = useActivitiesStore();
+export const ExportSection = () => {
+  const { selectedActivities } = useSelectedActivities();
+  const { activities, loading } = useActivitiesStore();
 
   const onClickExport = () => {
     const selectedFullActivities = activities

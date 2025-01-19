@@ -7,7 +7,7 @@ interface ActivitiesState {
   toggleSelection: (id: string) => void;
 }
 
-export const useActivitiesStore = create<ActivitiesState>((set) => ({
+export const useSelectedActivities = create<ActivitiesState>((set) => ({
   selectedActivities: [],
   selectMany: (activities) => {
     set({

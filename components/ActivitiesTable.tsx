@@ -1,18 +1,12 @@
-import { StravaActivity } from "@/schemas/strava.schema";
-import { useActivitiesStore } from "@/stores/selectedActivitiesStore";
+import { useActivitiesStore } from "@/stores/activitiesStore";
+import { useSelectedActivities } from "@/stores/selectedActivitiesStore";
 import { styled } from "styled-components";
 
-type ActivitiesTableProps = {
-  activities: StravaActivity[];
-  loading: boolean;
-};
-
-export const ActivitiesTable = ({
-  activities,
-  loading,
-}: ActivitiesTableProps) => {
+export const ActivitiesTable = () => {
   const { selectedActivities, selectMany, unselectAll, toggleSelection } =
-    useActivitiesStore();
+    useSelectedActivities();
+
+  const { activities, loading } = useActivitiesStore();
 
   if (loading) {
     return "loading";
@@ -25,10 +19,20 @@ export const ActivitiesTable = ({
         onClick={() => selectMany(activities.map((a) => a.id.toString()))}
       >
         select all
-      </button>{" "}
+      </button>
       <StTable>
-        {(activities || []).map((activity) => {
-          return (
+        <thead>
+          <StRow selected={false}>
+            <th>type</th>
+            <th>name</th>
+            <th>distance</th>
+            <th>moving time</th>
+            <th>elevation gain</th>
+            <th>include lap data</th>
+          </StRow>
+        </thead>
+        <tbody>
+          {(activities || []).map((activity) => (
             <StRow
               selected={selectedActivities.includes(activity.id.toString())}
               key={activity.id}
@@ -38,9 +42,13 @@ export const ActivitiesTable = ({
               <StTd>{activity.name}</StTd>
               <StTd>{activity.distance}</StTd>
               <StTd>{activity.moving_time}</StTd>
+              <StTd>{activity.total_elevation_gain}</StTd>
+              <StTd>
+                <button>load laps of activity</button>
+              </StTd>
             </StRow>
-          );
-        })}
+          ))}
+        </tbody>
       </StTable>
     </div>
   );
