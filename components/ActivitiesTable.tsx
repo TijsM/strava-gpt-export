@@ -1,6 +1,5 @@
 import { StravaActivity } from "@/schemas/strava.schema";
 import { useActivitiesStore } from "@/stores/selectedActivitiesStore";
-import { act, useState } from "react";
 import { styled } from "styled-components";
 
 type ActivitiesTableProps = {
@@ -20,28 +19,30 @@ export const ActivitiesTable = ({
   }
 
   return (
-    <StTable>
+    <div>
       <button onClick={unselectAll}>unselect all</button>
       <button
         onClick={() => selectMany(activities.map((a) => a.id.toString()))}
       >
         select all
-      </button>
-      {(activities || []).map((activity) => {
-        return (
-          <StRow
-            selected={selectedActivities.includes(activity.id.toString())}
-            key={activity.id}
-            onClick={() => toggleSelection(activity.id.toString())}
-          >
-            <StTd>{activity.type}</StTd>
-            <StTd>{activity.name}</StTd>
-            <StTd>{activity.distance}</StTd>
-            <StTd>{activity.moving_time}</StTd>
-          </StRow>
-        );
-      })}
-    </StTable>
+      </button>{" "}
+      <StTable>
+        {(activities || []).map((activity) => {
+          return (
+            <StRow
+              selected={selectedActivities.includes(activity.id.toString())}
+              key={activity.id}
+              onClick={() => toggleSelection(activity.id.toString())}
+            >
+              <StTd>{activity.type}</StTd>
+              <StTd>{activity.name}</StTd>
+              <StTd>{activity.distance}</StTd>
+              <StTd>{activity.moving_time}</StTd>
+            </StRow>
+          );
+        })}
+      </StTable>
+    </div>
   );
 };
 
