@@ -1,5 +1,6 @@
 import { StravaActivity } from "@/schemas/strava.schema";
-import { useState } from "react";
+import { useActivitiesStore } from "@/stores/selectedActivitiesStore";
+import { act, useState } from "react";
 import { styled } from "styled-components";
 
 type ActivitiesTableProps = {
@@ -11,39 +12,27 @@ export const ActivitiesTable = ({
   activities,
   loading,
 }: ActivitiesTableProps) => {
-  const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
-
-  const onClickRow = (id: string) => {
-    if (selectedActivities.includes(id)) {
-      setSelectedActivities((prev) =>
-        prev.filter((activityId) => activityId !== id)
-      );
-    } else {
-      setSelectedActivities((prev) => [...prev, id]);
-    }
-  };
-
-  const selectAll = () => {
-    setSelectedActivities(activities.map((activity) => activity.id.toString()));
-  };
-  const unselectAll = () => {
-    setSelectedActivities([]);
-  };
+  const { selectedActivities, selectMany, unselectAll, toggleSelection } =
+    useActivitiesStore();
 
   if (loading) {
     return "loading";
   }
 
   return (
-    <table>
+    <StTable>
       <button onClick={unselectAll}>unselect all</button>
-      <button onClick={selectAll}>select all</button>
+      <button
+        onClick={() => selectMany(activities.map((a) => a.id.toString()))}
+      >
+        select all
+      </button>
       {(activities || []).map((activity) => {
         return (
           <StRow
             selected={selectedActivities.includes(activity.id.toString())}
             key={activity.id}
-            onClick={() => onClickRow(activity.id.toString())}
+            onClick={() => toggleSelection(activity.id.toString())}
           >
             <StTd>{activity.type}</StTd>
             <StTd>{activity.name}</StTd>
@@ -52,9 +41,13 @@ export const ActivitiesTable = ({
           </StRow>
         );
       })}
-    </table>
+    </StTable>
   );
 };
+
+const StTable = styled.table`
+  width: 100%;
+`;
 
 const StRow = styled.tr<{ selected: boolean }>`
   margin: 8px;
