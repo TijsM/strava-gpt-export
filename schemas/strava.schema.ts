@@ -11,8 +11,6 @@ const athleteSchema = z.object({
   resource_state: z.number(),
 });
 
-const activityTypeSchema = z.enum(["Run", "Swim", "Ride"]);
-
 const activitySchema = z.object({
   resource_state: z.number(),
   athlete: athleteSchema,
@@ -21,7 +19,7 @@ const activitySchema = z.object({
   moving_time: z.number(),
   elapsed_time: z.number(),
   total_elevation_gain: z.number(),
-  type: activityTypeSchema,
+  type: z.string(),
   sport_type: z.string(),
   workout_type: z.nullable(z.any()),
   id: z.union([z.string(), z.number()]),
@@ -67,6 +65,3 @@ const activitySchema = z.object({
 });
 
 export type StravaActivity = z.infer<typeof activitySchema>;
-export const supportedActivityTypes = ["Run", "Swim", "Ride"] as ActivityType[];
-
-export type ActivityType = z.infer<typeof activityTypeSchema>;

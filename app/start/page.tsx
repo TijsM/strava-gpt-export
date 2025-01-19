@@ -1,7 +1,6 @@
 "use client";
 
 import { ActivitiesTable } from "@/components/ActivitiesTable";
-import { Stats } from "@/components/Stats";
 import { useLogPageView } from "@/lib/analytics/posthog";
 import { getStravaCode } from "@/lib/strava-auth/auth-storage";
 import { searchActivities } from "@/lib/strava/searchActivities";
@@ -26,7 +25,7 @@ const StartPage = () => {
 
       const activities = await searchActivities({
         token: stravaAuthToken,
-        before: new Date(2024, 11, 31),
+        before: new Date(),
         after: new Date(2024, 0, 31),
       });
 
