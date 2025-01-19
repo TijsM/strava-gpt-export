@@ -1,16 +1,21 @@
+import { useActivitiesLapStore } from "@/stores/activitiesLapStore";
 import { useActivitiesStore } from "@/stores/activitiesStore";
 import { useSelectedActivities } from "@/stores/selectedActivitiesStore";
 import { styled } from "styled-components";
 
 export const ActivitiesTable = () => {
+  const { activities, loading } = useActivitiesStore();
+  const { loadLapsForActivity, activityIdsWithLaps } = useActivitiesLapStore();
   const { selectedActivities, selectMany, unselectAll, toggleSelection } =
     useSelectedActivities();
-
-  const { activities, loading } = useActivitiesStore();
 
   if (loading) {
     return "loading";
   }
+
+  const onClickLoadLapsForActivity = (activityId: string) => {
+    loadLapsForActivity(activityId);
+  };
 
   return (
     <div>
@@ -44,7 +49,17 @@ export const ActivitiesTable = () => {
               <StTd>{activity.moving_time}</StTd>
               <StTd>{activity.total_elevation_gain}</StTd>
               <StTd>
-                <button>load laps of activity</button>
+                {activityIdsWithLaps.includes(activity.id.toString()) ? (
+                  "loaded"
+                ) : (
+                  <button
+                    onClick={() =>
+                      onClickLoadLapsForActivity(activity.id.toString())
+                    }
+                  >
+                    load laps
+                  </button>
+                )}
               </StTd>
             </StRow>
           ))}

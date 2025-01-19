@@ -1,6 +1,6 @@
 "use server";
 
-import { StravaActivity } from "@/schemas/strava.schema";
+import { StravaActivity } from "@/schemas/activity.schema";
 import { formatDateAsEpoch } from "../formatDateAsEpoch";
 import { checkStravaResponseStatus } from "../strava-auth/authGuard";
 
@@ -35,20 +35,16 @@ export const searchActivities = async ({
       page: page.toString(),
     });
 
-    console.log("params", params.toString());
-
     const url = `https://www.strava.com/api/v3/activities?${params.toString()}`;
 
     const response = await fetch(url, options);
 
-    console.log("response", response.ok);
     if (!response.ok) {
       allFetched = true;
       checkStravaResponseStatus(response);
     }
 
     const json = await response.json();
-    // console.log("json", json);
 
     allActivities.push(...json);
     allFetched = json.length < 100;

@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { StravaActivity } from "@/schemas/strava.schema";
+import { StravaActivity } from "@/schemas/activity.schema";
 import { searchActivities } from "@/lib/strava/searchActivities";
 import { getStravaCode } from "@/lib/strava-auth/auth-storage";
 
