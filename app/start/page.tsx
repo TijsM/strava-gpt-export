@@ -1,5 +1,6 @@
 "use client";
 
+import { ActivitiesTable } from "@/components/ActivitiesTable";
 import { Stats } from "@/components/Stats";
 import { useLogPageView } from "@/lib/analytics/posthog";
 import { getStravaCode } from "@/lib/strava-auth/auth-storage";
@@ -36,7 +37,7 @@ const StartPage = () => {
     startFetch();
   }, []);
 
-  return <Stats activities={activities} loading={loading} />;
+  return <ActivitiesTable loading={loading} activities={activities} />;
 };
 
 export default StartPage;
