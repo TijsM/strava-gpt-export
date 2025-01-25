@@ -1,11 +1,17 @@
 import { useActivitiesLapStore } from "@/stores/activitiesLapStore";
 import { useActivitiesStore } from "@/stores/activitiesStore";
+import { useActivitiesZonesStore } from "@/stores/activitiesZonesStore";
 import { useSelectedActivities } from "@/stores/selectedActivitiesStore";
 import { styled } from "styled-components";
 
 export const ActivitiesTable = () => {
   const { activities, loading } = useActivitiesStore();
+
   const { loadLapsForActivity, activityIdsWithLaps } = useActivitiesLapStore();
+
+  const { loadZonesForActivity, activityIdsWithZones } =
+    useActivitiesZonesStore();
+
   const { selectedActivities, selectMany, unselectAll, toggleSelection } =
     useSelectedActivities();
 
@@ -15,6 +21,16 @@ export const ActivitiesTable = () => {
 
   const onClickLoadLapsForActivity = (activityId: string) => {
     loadLapsForActivity(activityId);
+    if (!selectedActivities.includes(activityId)) {
+      toggleSelection(activityId);
+    }
+  };
+
+  const onClickLoadZonesForActivity = (activityId: string) => {
+    loadZonesForActivity(activityId);
+    if (!selectedActivities.includes(activityId)) {
+      toggleSelection(activityId);
+    }
   };
 
   return (
@@ -34,6 +50,7 @@ export const ActivitiesTable = () => {
             <th>moving time</th>
             <th>elevation gain</th>
             <th>include lap data</th>
+            <th>include zones data</th>
           </StRow>
         </thead>
         <tbody>
@@ -53,11 +70,26 @@ export const ActivitiesTable = () => {
                   "loaded"
                 ) : (
                   <button
-                    onClick={() =>
-                      onClickLoadLapsForActivity(activity.id.toString())
-                    }
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onClickLoadLapsForActivity(activity.id.toString());
+                    }}
                   >
                     load laps
+                  </button>
+                )}
+              </StTd>
+              <StTd>
+                {activityIdsWithZones.includes(activity.id.toString()) ? (
+                  "loaded"
+                ) : (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onClickLoadZonesForActivity(activity.id.toString());
+                    }}
+                  >
+                    load zones
                   </button>
                 )}
               </StTd>
