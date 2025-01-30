@@ -1,5 +1,7 @@
 "use client";
 
+import { jsonToGptString } from "@/lib/jsonToGptString";
+import { EnrichedActivity } from "@/schemas/enrichedActivity.schema";
 import { useActivitiesLapStore } from "@/stores/activitiesLapStore";
 import { useActivitiesStore } from "@/stores/activitiesStore";
 import { useActivitiesZonesStore } from "@/stores/activitiesZonesStore";
@@ -13,7 +15,7 @@ export const ExportSection = () => {
   const { activities, loading } = useActivitiesStore();
 
   const onClickExport = () => {
-    const selectedFullActivities = activities
+    const selectedFullActivities: EnrichedActivity[] = activities
       .filter((activity) => selectedActivities.includes(activity.id.toString()))
       .map((activity) => {
         return {
@@ -55,9 +57,7 @@ export const ExportSection = () => {
         };
       });
 
-    navigator.clipboard.writeText(
-      JSON.stringify(selectedFullActivities, null, 2)
-    );
+    navigator.clipboard.writeText(jsonToGptString(selectedFullActivities));
   };
 
   return (
