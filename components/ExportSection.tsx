@@ -4,6 +4,7 @@ import { jsonToGptString } from "@/lib/jsonToGptString";
 import { EnrichedActivity } from "@/schemas/enrichedActivity.schema";
 import { useActivitiesLapStore } from "@/stores/activitiesLapStore";
 import { useActivitiesStore } from "@/stores/activitiesStore";
+import { useActivitiesStreamsStore } from "@/stores/activitiesStreamsStore";
 import { useActivitiesZonesStore } from "@/stores/activitiesZonesStore";
 import { useSelectedActivities } from "@/stores/selectedActivitiesStore";
 import { styled } from "styled-components";
@@ -13,6 +14,7 @@ export const ExportSection = () => {
   const { laps } = useActivitiesLapStore();
   const { zones } = useActivitiesZonesStore();
   const { activities, loading } = useActivitiesStore();
+  const { streams } = useActivitiesStreamsStore();
 
   const onClickExport = () => {
     const selectedFullActivities: EnrichedActivity[] = activities
@@ -53,6 +55,13 @@ export const ExportSection = () => {
               distribution_buckets: zone.distribution_buckets,
               type: zone.type,
               sensor_based: zone.sensor_based,
+            })),
+          streams: streams
+            .filter((stream) => stream.activityId === activity.id.toString())
+            .map((stream) => ({
+              data: stream.data,
+              series_type: stream.series_type,
+              resolution: stream.resolution,
             })),
         };
       });

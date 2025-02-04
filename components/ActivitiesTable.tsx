@@ -1,5 +1,6 @@
 import { useActivitiesLapStore } from "@/stores/activitiesLapStore";
 import { useActivitiesStore } from "@/stores/activitiesStore";
+import { useActivitiesStreamsStore } from "@/stores/activitiesStreamsStore";
 import { useActivitiesZonesStore } from "@/stores/activitiesZonesStore";
 import { useSelectedActivities } from "@/stores/selectedActivitiesStore";
 import { styled } from "styled-components";
@@ -11,6 +12,9 @@ export const ActivitiesTable = () => {
 
   const { loadZonesForActivity, activityIdsWithZones } =
     useActivitiesZonesStore();
+
+  const { loadStreamsForActivity, activityIdsWithStreams } =
+    useActivitiesStreamsStore();
 
   const { selectedActivities, selectMany, unselectAll, toggleSelection } =
     useSelectedActivities();
@@ -28,6 +32,13 @@ export const ActivitiesTable = () => {
 
   const onClickLoadZonesForActivity = (activityId: string) => {
     loadZonesForActivity(activityId);
+    if (!selectedActivities.includes(activityId)) {
+      toggleSelection(activityId);
+    }
+  };
+
+  const onClickLoadStreamsForActivity = (activityId: string) => {
+    loadStreamsForActivity(activityId);
     if (!selectedActivities.includes(activityId)) {
       toggleSelection(activityId);
     }
@@ -51,6 +62,7 @@ export const ActivitiesTable = () => {
             <th>elevation gain</th>
             <th>include lap data</th>
             <th>include zones data</th>
+            <th>include streams data</th>
           </StRow>
         </thead>
         <tbody>
@@ -90,6 +102,20 @@ export const ActivitiesTable = () => {
                     }}
                   >
                     load zones
+                  </button>
+                )}
+              </StTd>
+              <StTd>
+                {activityIdsWithStreams.includes(activity.id.toString()) ? (
+                  "loaded"
+                ) : (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onClickLoadStreamsForActivity(activity.id.toString());
+                    }}
+                  >
+                    load streams
                   </button>
                 )}
               </StTd>
