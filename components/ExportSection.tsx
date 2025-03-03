@@ -27,6 +27,15 @@ const formatTime = (time: number | string) => {
   return `${hours}:${minutes}:${seconds}`;
 };
 
+const formatDistance = (distance: number | string) => {
+  if (typeof distance === "string") {
+    return distance;
+  }
+  const km = Math.floor(distance / 1000);
+
+  return `${km}km`;
+};
+
 export const ExportSection = () => {
   const { selectedActivities } = useSelectedActivities();
   const { laps } = useActivitiesLapStore();
@@ -40,7 +49,7 @@ export const ExportSection = () => {
       .map((activity) => {
         return {
           name: activity.name,
-          distance: activity.distance,
+          distance: formatDistance(activity.distance),
           moving_time: formatTime(activity.moving_time),
           elapsed_time: formatTime(activity.elapsed_time),
           sport_type: activity.sport_type,
@@ -61,7 +70,7 @@ export const ExportSection = () => {
               name: lap.name,
               elapsed_time: formatTime(lap.elapsed_time),
               moving_time: formatTime(lap.moving_time),
-              distance: lap.distance,
+              distance: formatDistance(lap.distance),
               average_speed: convertMeterPerSecondToKmAnHour(lap.average_speed),
               max_speed: convertMeterPerSecondToKmAnHour(lap.max_speed),
               total_elevation_gain: lap.total_elevation_gain,
