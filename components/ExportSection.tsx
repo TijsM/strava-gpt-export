@@ -13,7 +13,7 @@ const convertMeterPerSecondToKmAnHour = (ms: number | string) => {
   if (typeof ms === "string") {
     return ms;
   }
-  return `${ms / 3.6}km/h`;
+  return `${ms * 3.6}km/h`;
 };
 
 const formatTime = (time: number | string) => {
@@ -47,9 +47,11 @@ export const ExportSection = () => {
     const selectedFullActivities: EnrichedActivity[] = activities
       .filter((activity) => selectedActivities.includes(activity.id.toString()))
       .map((activity) => {
+        console.log(activity);
         return {
           name: activity.name,
           distance: formatDistance(activity.distance),
+          description: activity.description,
           moving_time: formatTime(activity.moving_time),
           elapsed_time: formatTime(activity.elapsed_time),
           sport_type: activity.sport_type,

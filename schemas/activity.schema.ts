@@ -15,6 +15,7 @@ const activitySchema = z.object({
   resource_state: z.number(),
   athlete: athleteSchema,
   name: z.string(),
+  description: z.string().optional(),
   distance: z.union([z.string(), z.number()]),
   moving_time: z.union([z.string(), z.number()]),
   elapsed_time: z.union([z.string(), z.number()]),
