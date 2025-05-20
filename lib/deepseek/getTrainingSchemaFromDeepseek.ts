@@ -8,7 +8,7 @@ type TrainingSchemaInput = {
   intensity: string;
 };
 
-export const getTrainingSchema = async (input: TrainingSchemaInput) => {
+export const getTrainingSchemaFromDeepseek = async (input: TrainingSchemaInput) => {
   const openai = new OpenAI({
     baseURL: "https://api.deepseek.com",
     apiKey: process.env.deepseek_api_key,
@@ -35,9 +35,10 @@ Your goal is to create the most effective training schema to help the athlete im
 3.  **Consider the principles of effective triathlon training:**
     * **Specificity:** Training should mimic the demands of triathlon racing.
     * **Progressive Overload:** Gradually increasing training volume or intensity over time.
-    * **Recovery:** Adequate rest and recovery are crucial for adaptation.
+    * **Recovery:** Adequate rest and recovery are crucial for adaptation. Make sure rest/recovery days are included.
     * **Variety:** Incorporating different types of workouts to stimulate different physiological systems and prevent plateau.
     * **Individualization:** The plan should be tailored to the athlete's current fitness level, goals, and available time.
+    * 
 
 4.  **Generate a full ${input.duration}-week training schema.** This schema should include:
     * Specific workouts for swimming, cycling, and running.
@@ -47,6 +48,8 @@ Your goal is to create the most effective training schema to help the athlete im
     * A logical progression within the week, avoiding back-to-back high-intensity sessions in the same discipline.
 
 5.  **Provide a brief explanation of the rationale behind the generated training schema.** Highlight how the plan addresses the athlete's identified strengths and weaknesses and incorporates sound triathlon training principles. Explain any specific workout choices or the sequencing of training.
+
+
 
 
 Output only a well-formed JSON object. Do not include explanations, introductions, or markdown formatting. The JSON must follow this exact structure:
@@ -89,15 +92,27 @@ All fields must be present. Use an empty array for days without sessions. Only r
   my goal is to ${input.goal} in ${input.duration} with an average of ${input.intensity} per week.
   Here is my Strava activity history: ${input.activityString}`;
 
-  const completion = await openai.chat.completions.create({
+  const stream = await openai.chat.completions.create({
+    model: "deepseek-chat",
+    stream: true,
     messages: [
       { role: "system", content: systemPrompt },
-
       { role: "user", content: userPrompt },
     ],
-    model: "deepseek-chat",
   });
 
-  console.log(completion);
-  return completion.choices[0].message.content;
+  const encoder = new TextEncoder();
+  const readable = new ReadableStream({
+    async start(controller) {
+      for await (const chunk of stream) {
+        const content = chunk.choices[0]?.delta?.content;
+        if (content) {
+          controller.enqueue(encoder.encode(content));
+        }
+      }
+      controller.close();
+    },
+  });
+
+  return readable;
 };

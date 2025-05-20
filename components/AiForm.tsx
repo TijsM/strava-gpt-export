@@ -1,10 +1,9 @@
 "use client";
 
-import { getTrainingSchema } from "@/lib/deepseek/getTrainingSchema";
 import React, { useState } from "react";
 import { keyframes, styled } from "styled-components";
 
-export const DeepseekForm = () => {
+export const AiForm = ({ url }: { url: string }) => {
   const [formData, setFormData] = useState({
     goal: "",
     duration: "",
@@ -24,17 +23,33 @@ export const DeepseekForm = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    setLoading(true);
     e.preventDefault();
-    const responseFromDeepseek = await getTrainingSchema({
-      activityString: formData.activitiesExport,
-      goal: formData.goal,
-      duration: formData.duration,
-      intensity: formData.intensity,
+    setResponse("");
+    setLoading(true);
+
+    const res = await fetch(url, {
+      method: "POST",
+      body: JSON.stringify(formData),
+      headers: {
+        "Content-Type": "application/json",
+      },
     });
 
+    const reader = res.body?.getReader();
+    const decoder = new TextDecoder();
+
+    if (!reader) return;
+
+    let result = "";
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      result += decoder.decode(value, { stream: true });
+      setResponse((prev) => prev + decoder.decode(value, { stream: true }));
+    }
+
     setLoading(false);
-    setResponse(responseFromDeepseek as string);
   };
 
   return (
