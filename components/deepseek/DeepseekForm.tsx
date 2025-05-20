@@ -2,6 +2,7 @@
 
 import { getTrainingSchema } from "@/lib/deepseek/getTrainingSchema";
 import React, { useState } from "react";
+import { keyframes, styled } from "styled-components";
 
 export const DeepseekForm = () => {
   const [formData, setFormData] = useState({
@@ -12,6 +13,7 @@ export const DeepseekForm = () => {
   });
 
   const [response, setResponse] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -22,6 +24,7 @@ export const DeepseekForm = () => {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    setLoading(true);
     e.preventDefault();
     const responseFromDeepseek = await getTrainingSchema({
       activityString: formData.activitiesExport,
@@ -30,8 +33,8 @@ export const DeepseekForm = () => {
       intensity: formData.intensity,
     });
 
+    setLoading(false);
     setResponse(responseFromDeepseek as string);
-    console.log(formData);
   };
 
   return (
@@ -86,7 +89,26 @@ export const DeepseekForm = () => {
       </div>
       <button onClick={handleSubmit}>Submit</button>
 
+      {loading && <StSpinner />}
       <p>{response}</p>
     </form>
   );
 };
+const spin = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+`;
+
+const StSpinner = styled.div`
+  margin-top: 20px;
+  margin-left: 20px;
+  width: 40px;
+  height: 40px;
+  border: 4px solid rgba(0, 0, 0, 0.1);
+  animation: ${spin} 1s linear infinite;
+`;

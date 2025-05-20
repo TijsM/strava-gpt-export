@@ -39,7 +39,7 @@ Your goal is to create the most effective training schema to help the athlete im
     * **Variety:** Incorporating different types of workouts to stimulate different physiological systems and prevent plateau.
     * **Individualization:** The plan should be tailored to the athlete's current fitness level, goals, and available time.
 
-4.  **Generate a sample weekly training schema.** This schema should include:
+4.  **Generate a full ${input.duration}-week training schema.** This schema should include:
     * Specific workouts for swimming, cycling, and running.
     * Consideration for brick workouts (bike followed by run).
     * Recommendations for training intensity (e.g., easy, moderate, hard, specific zones if data allows).
@@ -49,6 +49,40 @@ Your goal is to create the most effective training schema to help the athlete im
 5.  **Provide a brief explanation of the rationale behind the generated training schema.** Highlight how the plan addresses the athlete's identified strengths and weaknesses and incorporates sound triathlon training principles. Explain any specific workout choices or the sequencing of training.
 
 
+Output only a well-formed JSON object. Do not include explanations, introductions, or markdown formatting. The JSON must follow this exact structure:
+Output must include **all ${input.duration} weeks**, with **every workout of every week**, and must use the following format:
+Omitting any weeks or days will result in an invalid output. Do not summarize or skip. Each week must include exactly 7 days, and each day must include either zero or more training sessions.
+[
+  {
+    "week": "YYYY-MM-DD",
+    "summary": {
+      "total_hours": number,
+      "total_sessions": number,
+      "focus": string
+    },
+    "days": [
+      {
+        "date": "YYYY-MM-DD",
+        "sessions": [
+          {
+            "sport": "swim" | "bike" | "run",
+            "type": string,
+            "duration_minutes": number,
+            "intensity": "easy" | "moderate" | "hard",
+            "description": string,
+            "zones": {
+              "hr"?: string,
+              "pace"?: string,
+              "power"?: string
+            }
+          }
+        ]
+      }
+    ]
+  }
+]
+
+All fields must be present. Use an empty array for days without sessions. Only return JSON – no comments, explanations, or other text.
 `;
 
   const userPrompt = `
