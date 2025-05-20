@@ -6,7 +6,7 @@ import { useSelectedActivities } from "@/stores/selectedActivitiesStore";
 import { styled } from "styled-components";
 
 export const ActivitiesTable = () => {
-  const { activities, loading } = useActivitiesStore();
+  const { filteredActivities, loading } = useActivitiesStore();
 
   const { loadLapsForActivity, activityIdsWithLaps } = useActivitiesLapStore();
 
@@ -48,7 +48,9 @@ export const ActivitiesTable = () => {
     <div>
       <button onClick={unselectAll}>unselect all</button>
       <button
-        onClick={() => selectMany(activities.map((a) => a.id.toString()))}
+        onClick={() =>
+          selectMany(filteredActivities.map((a) => a.id.toString()))
+        }
       >
         select all
       </button>
@@ -66,7 +68,7 @@ export const ActivitiesTable = () => {
           </StRow>
         </thead>
         <tbody>
-          {(activities || []).map((activity) => (
+          {(filteredActivities || []).map((activity) => (
             <StRow
               selected={selectedActivities.includes(activity.id.toString())}
               key={activity.id}
