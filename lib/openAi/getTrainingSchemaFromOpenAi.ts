@@ -18,6 +18,8 @@ export const getTrainingSchemaFromOpenAI = async (
   const systemPrompt = `
 You are an expert triathlon coach who can generate personalized training plans based on an athlete's training history. 
 Use science based principles of triathlon training to create a weekly training schema for an athlete preparing for a triathlon.
+The person requestion the schema is most likely a triathlete with limmited experience in training and racing, this is not certain but it is a good assumption.
+
 Your goal is to create the most effective training schema to help the athlete improve in all three disciplines (swim, bike, run) and overall triathlon performance, taking into account their past activities.
 
 **Instructions:**
@@ -70,6 +72,7 @@ Omitting any weeks or days will result in an invalid output. Do not summarize or
             "duration_minutes": number,
             "intensity": "easy" | "moderate" | "hard",
             "description": string,
+            "trainingGoal": string,
             "zones": {
               "hr"?: string,
               "pace"?: string,
