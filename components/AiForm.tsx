@@ -1,5 +1,6 @@
 "use client";
 
+import { createPdf } from "@/lib/pdf/createPdf";
 import React, { useState } from "react";
 import { keyframes, styled } from "styled-components";
 
@@ -52,8 +53,29 @@ export const AiForm = ({ url }: { url: string }) => {
     setLoading(false);
   };
 
+  const clickCreatePdf = async () => {
+    const response = await fetch("/api/pdf");
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "invoice.pdf";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <form>
+      <button
+        onClick={() => {
+          clickCreatePdf();
+        }}
+      >
+        create pdf
+      </button>
       <div>
         <label htmlFor="goal">Goal</label>
         <input
@@ -106,6 +128,7 @@ export const AiForm = ({ url }: { url: string }) => {
 
       {loading && <StSpinner />}
       <p>{response}</p>
+      {response && <button onClick={clickCreatePdf}>create pdf</button>}
     </form>
   );
 };
