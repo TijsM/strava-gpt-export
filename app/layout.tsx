@@ -1,9 +1,18 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import localFont from "next/font/local";
+import { Roboto } from "next/font/google";
+
 import "./globals.css";
 import { CSPostHogProvider } from "./providers";
 
-const inter = Inter({ subsets: ["latin"] });
+const varsity = localFont({
+  src: "../public/VarsityTeam-Bold.otf",
+});
+
+const roboto = Roboto({
+  weight: "700",
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,7 +27,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <CSPostHogProvider>
-        <body className={inter.className}>{children}</body>
+        <body className={`${varsity.className} ${roboto.className}`}>
+          {children}
+        </body>
       </CSPostHogProvider>
     </html>
   );
