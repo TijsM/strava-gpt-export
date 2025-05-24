@@ -1,10 +1,10 @@
 import { colors } from "@/lib/theme/theme";
 import { styled } from "styled-components";
 
-export const H1 = styled.h1`
+export const H1 = styled.h1<{ white?: boolean }>`
   font-size: 64px;
   font: varsity;
-  color: ${colors.primary};
+  color: ${(props) => (props.white ? colors.white : colors.secondary)};
 `;
 
 export const H2 = styled.h2`

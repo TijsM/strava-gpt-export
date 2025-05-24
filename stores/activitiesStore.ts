@@ -10,6 +10,32 @@ interface ActivitiesState {
   fetchActivities: () => Promise<void>;
 }
 
+const isInPeriod = (dateStr: string, monthsAgo: number) => {
+  const activityDate = new Date(dateStr);
+  const cutoff = new Date();
+  cutoff.setMonth(cutoff.getMonth() - monthsAgo);
+  return activityDate > cutoff;
+};
+
+const getWeeklyStats = (
+  activities: StravaActivity[],
+  monthsAgo: number
+): { hours: number; sessionsPerWeek: number } => {
+  const filtered = activities.filter((a) =>
+    isInPeriod(a.start_date, monthsAgo)
+  );
+
+  const totalHours = filtered.reduce(
+    (acc, a) => acc + Number(a.moving_time) / 3600,
+    0
+  );
+  const weeks = monthsAgo * 4.34524; // average weeks per month
+  return {
+    hours: totalHours,
+    sessionsPerWeek: filtered.length / weeks,
+  };
+};
+
 export const useActivitiesStore = create<ActivitiesState>((set) => ({
   activities: [],
   filteredActivities: [],

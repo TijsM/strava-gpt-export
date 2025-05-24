@@ -21,7 +21,7 @@ const StravaAuthPage = ({
 
       if (response) {
         storeAuthResponse(response);
-        router.push("/start");
+        router.push("/strava/loading");
       }
     };
 
