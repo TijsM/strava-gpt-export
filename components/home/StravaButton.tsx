@@ -1,19 +1,29 @@
 "use client";
 
 import { styled } from "styled-components";
-import { useRouter } from "next/navigation";
-import { hasStravaCode } from "@/lib/strava-auth/auth-storage";
 import Image from "next/image";
+import { useEffect, useState } from "react";
+import { logEvent, useLogPageView } from "@/lib/analytics/posthog";
+import { getAuthToken } from "@/lib/strava-auth/auth";
 
 export const StravaButton = () => {
-  const router = useRouter();
+  const [authUrl, setAuthUrl] = useState("");
+  useLogPageView();
+
+  useEffect(() => {
+    const getUrl = async () => {
+      setAuthUrl(await getAuthToken(window.location.origin));
+    };
+    getUrl();
+  });
+
   const onClickStrava = () => {
-    const hastAuthCode = hasStravaCode();
-    if (hastAuthCode) {
-      return router.push("/start");
-    } else {
-      return router.push("/strava-auth/login");
-    }
+    window.location.href = authUrl;
+
+    logEvent({
+      action: "click",
+      name: "authenticate_button",
+    });
   };
 
   return (
